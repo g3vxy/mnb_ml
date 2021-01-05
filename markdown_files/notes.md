@@ -1,0 +1,2 @@
+I (Anıl Berke Sağlam), did not add Jupyter Notebook as a dependency because the actual python file doesnt depend on it.
+It can be installed with conda "conda install -c conda-forge notebook" or pip "pip install notebook"
