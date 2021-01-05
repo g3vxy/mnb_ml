@@ -1,9 +1,9 @@
 from flask import Flask, request
-#from flask_cors import CORS
+from flask_cors import CORS
 import json
 from ml import ml
 app = Flask(__name__)
-#CORS(app)
+CORS(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def ml_endpoint():

@@ -38,14 +38,14 @@ dataset = pd.read_csv('./dataset.csv',
 dataset = dataset.tail(-1)
 dataset = dataset.drop("Movie", 1)
 
-dataset = dataset.sample(frac=.01, random_state=1).reset_index(drop=True)
+dataset = dataset.sample(frac=.008, random_state=1).reset_index(drop=True)
 ```
 Pandas kütüphanesini data frame'leri oluşturmak için kullanıyoruz. Data frame'ler elimizdeki csv dosyasını bir çeşit iki boyutlu array'e dönüştürmemizi sağlıyor ve her feature'a bir isim atamamızı sağlıyor. Elimizdeki datayı tek seferde hafızaya yüklediğimiz için sadece yüzde birlik bir kısmını rastgele yükleyerek çalıştırdık projemizi.
 
 ```python
 def map_points(x):
     x = float(x.replace(',', '.'))
-    if x < 2.5:
+    if x < 3.3:
         return False
     else:
         return True
@@ -167,9 +167,9 @@ def classify(message):
     
     confidence = norm_values(p_positive_given_message, p_negative_given_message)
 
-    if p_negative_given_message > p_positive_given_message:
+    if p_negative_given_message < p_positive_given_message:
         return True, confidence[0], confidence[1]
-    elif p_negative_given_message < p_positive_given_message:
+    elif p_negative_given_message > p_positive_given_message:
         return False, confidence[0], confidence[1]
 ```
 - norm_doc fonksiyonu, test olarak verilen string'i temizleyip tokenize etmeye;

@@ -1,4 +1,4 @@
-def ml(message):
+def ml(input_sentence):
     import pandas as pd
 
     dataset = pd.read_csv('./dataset.csv', 
@@ -8,11 +8,11 @@ def ml(message):
     dataset = dataset.tail(-1)
     dataset = dataset.drop("Movie", 1)
 
-    dataset = dataset.sample(frac=.01, random_state=1).reset_index(drop=True)
+    dataset = dataset.sample(frac=.008, random_state=1).reset_index(drop=True)
     ########################################################################
     def map_points(x):
         x = float(x.replace(',', '.'))
-        if x < 2.5:
+        if x < 3.2:
             return False
         else:
             return True
@@ -120,16 +120,18 @@ def ml(message):
 
         for word in message:
             if word in parameters_positive:
+                print("positive ", word, " ", parameters_positive[word])
                 p_positive_given_message *= parameters_positive[word]
                 
             if word in parameters_negative:
+                print("negative ", word, " ", parameters_negative[word])
                 p_negative_given_message *= parameters_negative[word]
         
         confidence = norm_values(p_positive_given_message, p_negative_given_message)
 
-        if p_negative_given_message > p_positive_given_message:
+        if p_negative_given_message < p_positive_given_message:
             return True, confidence[0], confidence[1]
-        elif p_negative_given_message < p_positive_given_message:
+        elif p_negative_given_message > p_positive_given_message:
             return False, confidence[0], confidence[1]
     ########################################################################
-    return classify(message)
+    return classify(input_sentence)
