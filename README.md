@@ -6,7 +6,7 @@ Projemiz bir text classification projesi olduğu için hem basit hem de efektif 
 ### Multinominal Naive Bayes ile ilgili Formüller
 #### Bayes Teoremi
 
-![First formula]("./markdown_files/formul.png")
+![First formula](markdown_files/formul.png)
 
 - A ve B verilen durumlar
 - P(A|B), B doğru iken A'nın gerçekleşme ihtimali (Posterior Probability)
@@ -15,7 +15,7 @@ Projemiz bir text classification projesi olduğu için hem basit hem de efektif 
 
 #### Bayes Teoreminin Text Classification İçin Kullanılan Hali
 
-![Second formula]("./markdown_files/formul2.png")
+![Second formula](markdown_files/formul2.png)
 
 - nc, durum gerçekleşirkenki girdi olarak verilen kelime sayısı.
 - n, durum gerçekleşirkenki bütün kelimelerin sayısı.
