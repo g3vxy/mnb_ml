@@ -42,7 +42,7 @@ Pandas kütüphanesini data frame'leri oluşturmak için kullanıyoruz. Data fra
 ```python
 def map_points(x):
     x = float(x.replace(',', '.'))
-    if x < 2.5:
+    if x < 3.5:
         return False
     else:
         return True
@@ -164,9 +164,9 @@ def classify(message):
     
     confidence = norm_values(p_positive_given_message, p_negative_given_message)
 
-    if p_negative_given_message > p_positive_given_message:
+    if p_negative_given_message < p_positive_given_message:
         return True, confidence[0], confidence[1]
-    elif p_negative_given_message < p_positive_given_message:
+    elif p_negative_given_message > p_positive_given_message:
         return False, confidence[0], confidence[1]
 ```
 - norm_doc fonksiyonu, test olarak verilen string'i temizleyip tokenize etmeye;

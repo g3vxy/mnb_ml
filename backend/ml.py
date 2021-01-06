@@ -8,11 +8,11 @@ def ml(input_sentence):
     dataset = dataset.tail(-1)
     dataset = dataset.drop("Movie", 1)
 
-    dataset = dataset.sample(frac=.008, random_state=1).reset_index(drop=True)
+    dataset = dataset.sample(frac=.01, random_state=1).reset_index(drop=True)
     ########################################################################
     def map_points(x):
         x = float(x.replace(',', '.'))
-        if x < 3.2:
+        if x < 3.5:
             return False
         else:
             return True
