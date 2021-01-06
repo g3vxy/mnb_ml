@@ -5,21 +5,18 @@ Projemiz bir text classification projesi olduğu için hem basit hem de efektif 
 
 ### Multinominal Naive Bayes ile ilgili Formüller
 #### Bayes Teoremi
-$$
-\mathrm{P}(A|B) = {\dfrac{\mathrm{P}(B|A)\cdot\mathrm{P}(A)}{\mathrm{P}(B)}}
-$$
+
+![First formula](markdown_files/formul.png)
+
 - A ve B verilen durumlar
 - P(A|B), B doğru iken A'nın gerçekleşme ihtimali (Posterior Probability)
 - P(B|A), A doğru iken B'nın gerçekleşme ihtimali (Likelihood)
 - P(A) (Class Prior Probability) ile P(B) (Predictor Prior Probability) ise A ile B olaylarının gerçekleşme ihtimalleridir.
 
 #### Bayes Teoreminin Text Classification İçin Kullanılan Hali
-$$
-\mathrm{P}(durum|cümle) = \prod_{i=1}^n\mathrm{P}(kelime_i|durum)\cdot{P}(durum)
-$$
-$$
-\mathrm{P}(kelime|durum) = {\dfrac{nc+1}{n+vocabulary}}
-$$
+
+![Second formula](markdown_files/formul2.png)
+
 - nc, durum gerçekleşirkenki girdi olarak verilen kelime sayısı.
 - n, durum gerçekleşirkenki bütün kelimelerin sayısı.
 - vocabulary, eşsiz kelime sayısı.
@@ -38,14 +35,14 @@ dataset = pd.read_csv('./dataset.csv',
 dataset = dataset.tail(-1)
 dataset = dataset.drop("Movie", 1)
 
-dataset = dataset.sample(frac=.008, random_state=1).reset_index(drop=True)
+dataset = dataset.sample(frac=.01, random_state=1).reset_index(drop=True)
 ```
 Pandas kütüphanesini data frame'leri oluşturmak için kullanıyoruz. Data frame'ler elimizdeki csv dosyasını bir çeşit iki boyutlu array'e dönüştürmemizi sağlıyor ve her feature'a bir isim atamamızı sağlıyor. Elimizdeki datayı tek seferde hafızaya yüklediğimiz için sadece yüzde birlik bir kısmını rastgele yükleyerek çalıştırdık projemizi.
 
 ```python
 def map_points(x):
     x = float(x.replace(',', '.'))
-    if x < 3.3:
+    if x < 3.5:
         return False
     else:
         return True
@@ -89,32 +86,52 @@ import numpy as np
 positive_values = dataset_joined[dataset_joined['Bool'] == np.bool_(True)]
 negative_values = dataset_joined[dataset_joined['Bool'] == np.bool_(False)]
 
-positive_percentage = positive_values.shape[0] / len(dataset_joined)
-negative_percentage = negative_values.shape[0] / len(dataset_joined)
+#p(durum)
+def find_class_prior_prob(positive_values, negative_values):
+    positive_percentage = positive_values.shape[0] / len(dataset_joined)
+    negative_percentage = negative_values.shape[0] / len(dataset_joined)
+    
+    return positive_percentage, negative_percentage
+    
+positive_percentage, negative_percentage = find_class_prior_prob(positive_values, negative_values)
 
-n_words_per_positive_message = positive_values['Comment'].apply(len)
-n_positive = n_words_per_positive_message.sum()
+#n değeri
+def n(positive_values, negative_values):
+    n_words_per_positive_message = positive_values['Comment'].apply(len)
+    n_positive = n_words_per_positive_message.sum()
 
-n_words_per_negative_message = negative_values['Comment'].apply(len)
-n_negative = n_words_per_negative_message.sum()
+    n_words_per_negative_message = negative_values['Comment'].apply(len)
+    n_negative = n_words_per_negative_message.sum()
+    
+    return n_positive, n_negative
 
+n_positive, n_negative = nc(positive_values, negative_values)
+
+#vocabulary uzunluğu
 n_vocabulary = len(vocabulary)
-
+```
+Class Prior Probability, n ve vocabulary değerlerini hesaplıyoruz. Buradaki hesaplamalar sırasında Numpy bool değerlerini kullanmamızın sebebi Python bool değerleri ile karşılaştırmada sıkıntı çıkması idi.
+```python
 alpha = 1 # laplace smoothing
 
 parameters_positive = {unique_word:0 for unique_word in vocabulary}
 parameters_negative = {unique_word:0 for unique_word in vocabulary}
 
+# datasetteki her kelime için p(kelime|durum hesaplanması)
+
 for word in vocabulary:
+    #nc
     n_word_given_positive = positive_values[word].sum()
+    #m estimate
     p_word_given_positive = (n_word_given_positive + alpha) / (n_positive + alpha*n_vocabulary)
     parameters_positive[word] = p_word_given_positive
-
+    #nc
     n_word_given_negative = negative_values[word].sum()
+    #m estimate
     p_word_given_negative = (n_word_given_negative + alpha) / (n_negative + alpha*n_vocabulary)
     parameters_negative[word] = p_word_given_negative
 ```
-Raporun matematiksel kısmındaki formülü kullanarak (laplace smoothing kullanıyoruz) gerekli değerleri hesaplıyoruz. Buradaki hesaplamalar sırasında Numpy bool değerlerini kullanmamızın sebebi Python bool değerleri ile karşılaştırmada sıkıntı çıkması idi.
+Raporun matematiksel kısmındaki formülü kullanarak (laplace smoothing kullanıyoruz) gerekli değerleri hesaplıyoruz. 
 ```python
 import re
 import nltk
