@@ -1,9 +1,0 @@
-{
-    "local": {
-      "BASE_URL": ""
-    },
-    "production": {
-      "BASE_URL": ""
-    }
-  }
-  
